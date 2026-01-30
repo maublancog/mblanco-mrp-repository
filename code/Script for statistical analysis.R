@@ -12,8 +12,6 @@ library("knitr")
 library("readxl")
 library("scales")
 library("ggrepel")
-setwd("C:/Users/bgmau/OneDrive/Documents/R and R Studio/MRP")
-
 
 # Voting Data in the UN ---------------------------------------------------
 
@@ -944,3 +942,4 @@ ggplot(df_ca, aes(year, pct_china)) +
   theme_minimal(base_size = 12) +
     theme(panel.grid.minor = element_blank(),
           strip.text = element_text(face = "bold"))
+
