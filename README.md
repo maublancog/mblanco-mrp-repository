@@ -32,3 +32,7 @@ All file paths in the scripts are specified relative to the repository root.
 
 - R version ≥ 4.2
 - Required packages are listed at the top of each R script
+
+## Funding Acknowledgement
+
+This reesearch was supported by the Social Sciences and Humanities Research Council and the Department of National Defence of Canada.
