@@ -594,8 +594,7 @@ Government_Ideology <- Government_Ideology %>%
     title = "Robustness Check: Impact of Chinese Economic Engagement on UNGA Voting Alignment with U.S. (2007–2022)",
     notes = "All models include country and year fixed effects. Controls added progressively across models 2–6."
   )
-  
-          strip.background = element_rect(fill = "grey95", color = NA))
+
   
   
   
