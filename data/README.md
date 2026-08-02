@@ -1,6 +1,6 @@
 Data
 
-This folder contains datasets used in the quantitative analysis for the Master’s Major Research Paper:
+This folder contains datasets used in the quantitative analysis for the article:
 
 **“Economic power and geopolitical shifts: Is China’s economic engagement reshaping foreign policy in Central America and the Caribbean?”**
 
