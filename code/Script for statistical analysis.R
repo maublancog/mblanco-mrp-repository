@@ -20,7 +20,7 @@ library("modelsummary")
 
 # Import Voting Data in the UN ---------------------------------------------------
 
-votes <- read.csv("UN_Votes.csv")
+votes <- read.csv(data/"UN_Votes.csv")
 
 ## Filtering: Countries in Central America; years of study; decisions marked as important by the US State Department
 
@@ -73,7 +73,7 @@ master_df <- df_long %>%
 
 # Importing data for Foreign Aid
 
-Foreign_Aid <- read_excel("Chiense Foreign Aid.xlsx")
+Foreign_Aid <- read_excel(data/"Chiense Foreign Aid.xlsx")
 
 Foreign_Aid <- Foreign_Aid %>% select ("Recipient", "Commitment Year", "Implementation Start Year", "Completion Year", "Sector Name", "Amount (Constant USD 2021)") %>%
   filter (Recipient %in% ca_countries)
@@ -113,7 +113,7 @@ master_df <- master_df %>%
 
 # Importing data
 
-Chinese_FDI <- read_excel("Chinese FDI.xlsx")
+Chinese_FDI <- read_excel(data/"Chinese FDI.xlsx")
 
 # Cleaning it
 
@@ -157,8 +157,8 @@ master_df <- master_df %>%
 
 #Import Data from WITS
 
-Exports_to_China <- read_excel("WITS Export Share.xlsx")
-Imports_from_China <- read_excel("WITS Import Share.xlsx")
+Exports_to_China <- read_excel(data/"WITS Export Share.xlsx")
+Imports_from_China <- read_excel(data/"WITS Import Share.xlsx")
 
 # Cleaning the data
 
@@ -218,7 +218,7 @@ master_df <- master_df %>%
 
 #1. Democracy Index
 
-VDem_dataset <- readRDS("V-Dem-Dataset.rds")
+VDem_dataset <- readRDS(data/"V-Dem-Dataset.rds")
 
 VDem_dataset <- VDem_dataset %>% filter (year >= 2007)%>%
   filter (year <= 2022) %>% 
@@ -298,7 +298,7 @@ Government_Ideology <- Government_Ideology %>%
   
   # 1. Clean and reshape the raw World Bank dataset
   
-  wb_raw <- read_excel("World Bank Economic Control Variables.xlsx")
+  wb_raw <- read_excel(data/"World Bank Economic Control Variables.xlsx")
   
   wb_cleaned <- wb_raw %>%
     
@@ -595,127 +595,6 @@ Government_Ideology <- Government_Ideology %>%
     notes = "All models include country and year fixed effects. Controls added progressively across models 2–6."
   )
   
-
-# Additional Graphics -----------------------------------------------------
-
-  ## Foreign Aid for Central America and Caribbean, with percentage of alignment with China
-  
-  
-  ## Aid figure
-  
-  # Figure 1: $ amount
-  
-  graphics <- master_df %>%
-    filter(year <= 2021)
-  
-  aid_year <- graphics %>%
-    group_by(year) %>%
-    summarise(
-      pct_china = mean(pct_china, na.rm = TRUE),
-      total_committed = sum(aid_committed, na.rm = TRUE),
-      .groups = "drop"
-    ) %>%
-    pivot_longer(cols = c(pct_china, total_committed),
-                 names_to = "series", values_to = "value") %>%
-    mutate(
-      series = recode(series,
-                      pct_china = "Voting alignment with China (%)",
-                      total_committed = "Total committed aid (US$ billions)",
-      )
-    )
-  
-  ggplot(aid_year, aes(x = year, y = value)) +
-    geom_line(linewidth = 1) +
-    geom_point(size = 1.8) +
-    geom_smooth(method = "loess", se = FALSE, linewidth = 0.9) +
-    facet_wrap(~series, ncol = 1, scales = "free_y") +
-    scale_x_continuous(breaks = pretty_breaks(6)) +
-    scale_y_continuous(labels = label_number(accuracy = 0.1)) +
-    labs(
-      x = "Year",
-      y = NULL
-    ) +
-    theme_minimal(base_size = 12) +
-    theme(
-      panel.grid.minor = element_blank(),
-      strip.text = element_text(face = "bold"),
-      plot.title = element_text(face = "bold"),
-      axis.title.x = element_text(margin = margin(t = 8)),
-      strip.background = element_rect(fill = "grey95", color = NA)
-    )
-  
-  
-  ## Foreign Direct Investment
-  
-  fdi_year <- summary_df4 %>%
-    group_by(year) %>%
-    summarise(
-      pct_china = mean(pct_china, na.rm = TRUE),
-      fdi_total = sum(fdi_total, na.rm = TRUE),
-      fdi_event = sum (fdi_event, na.rm = TRUE),
-      .groups = "drop"
-    ) %>%
-    pivot_longer(cols = c(pct_china, fdi_total, fdi_event),
-                 names_to = "series", values_to = "value") %>%
-    mutate(
-      series = recode(series,
-                      pct_china = "Voting alignment with China (%)",
-                      fdi_total = "Total FDI (US$ millions)",
-                      fdi_event = "Amount of countries who received FDI"
-      ),
-    )
-  
-  ggplot(fdi_year, aes(x = year, y = value)) +
-    geom_line(linewidth = 1) +
-    geom_point(size = 1.8) +
-    geom_smooth(method = "loess", se = FALSE, linewidth = 0.9) +
-    facet_wrap(~series, ncol = 1, scales = "free_y") +
-    scale_x_continuous(breaks = pretty_breaks(6)) +
-    scale_y_continuous(labels = label_number(accuracy = 0.1)) +
-    labs(
-      x = "Year",
-      y = NULL
-    ) +
-    theme_minimal(base_size = 12) +
-    theme(
-      panel.grid.minor = element_blank(),
-      strip.text = element_text(face = "bold"),
-      plot.title = element_text(face = "bold"),
-      axis.title.x = element_text(margin = margin(t = 8)),
-      strip.background = element_rect(fill = "grey95", color = NA)
-    )
-  
-  
-  
-  ## Trade
-  
-  trade_year <- summary_df4 %>%
-    group_by(year) %>%
-    summarise(
-      pct_china = mean(pct_china, na.rm = TRUE),
-      export_share_china = mean(export_share_china, na.rm = TRUE),
-      import_share_china = mean(import_share_china, na.rm = TRUE),
-      .groups = "drop"
-    ) %>%
-    pivot_longer(cols = c(pct_china, export_share_china, import_share_china),
-                 names_to = "series", values_to = "value") %>%
-    mutate(series = recode(series,
-                           pct_china = "Voting alignment with China (%)",
-                           export_share_china = "Average export share to China (%)",
-                           import_share_china = "Average import share from China (%)"
-    ))
-  
-  ggplot(trade_year, aes(year, value)) +
-    geom_line(linewidth = 1) +
-    geom_point(size = 1.8) +
-    geom_smooth(method = "loess", se = FALSE, linewidth = 0.9) +
-    facet_wrap(~series, ncol = 1, scales = "free_y") +
-    scale_x_continuous(breaks = pretty_breaks(6)) +
-    labs(x = "Year", y = NULL) +
-    theme_minimal(base_size = 12) +
-    theme(panel.grid.minor = element_blank(),
-          strip.text = element_text(face = "bold"),
-          plot.title = element_text(face = "bold"),
           strip.background = element_rect(fill = "grey95", color = NA))
   
   
