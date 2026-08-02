@@ -16,7 +16,6 @@ library(fixest)
 library("readr")
 library("stringr")
 library("modelsummary")
-setwd("C:/Users/bgmau/OneDrive/Documents/R and R Studio/MRP2")
 
 
 # Import Voting Data in the UN ---------------------------------------------------
