@@ -20,7 +20,7 @@ library("modelsummary")
 
 # Import Voting Data in the UN ---------------------------------------------------
 
-votes <- read.csv(data/"UN_Votes.csv")
+votes <- read.csv("data/UN_Votes.csv")
 
 ## Filtering: Countries in Central America; years of study; decisions marked as important by the US State Department
 
@@ -73,7 +73,7 @@ master_df <- df_long %>%
 
 # Importing data for Foreign Aid
 
-Foreign_Aid <- read_excel(data/"Chiense Foreign Aid.xlsx")
+Foreign_Aid <- read_excel("data/Chiense Foreign Aid.xlsx")
 
 Foreign_Aid <- Foreign_Aid %>% select ("Recipient", "Commitment Year", "Implementation Start Year", "Completion Year", "Sector Name", "Amount (Constant USD 2021)") %>%
   filter (Recipient %in% ca_countries)
@@ -113,7 +113,7 @@ master_df <- master_df %>%
 
 # Importing data
 
-Chinese_FDI <- read_excel(data/"Chinese FDI.xlsx")
+Chinese_FDI <- read_excel("data/Chinese FDI.xlsx")
 
 # Cleaning it
 
@@ -157,8 +157,8 @@ master_df <- master_df %>%
 
 #Import Data from WITS
 
-Exports_to_China <- read_excel(data/"WITS Export Share.xlsx")
-Imports_from_China <- read_excel(data/"WITS Import Share.xlsx")
+Exports_to_China <- read_excel("data/WITS Export Share.xlsx")
+Imports_from_China <- read_excel("data/WITS Import Share.xlsx")
 
 # Cleaning the data
 
@@ -218,7 +218,7 @@ master_df <- master_df %>%
 
 #1. Democracy Index
 
-VDem_dataset <- readRDS(data/"V-Dem-Dataset.rds")
+VDem_dataset <- readRDS("data/V-Dem-Dataset.rds")
 
 VDem_dataset <- VDem_dataset %>% filter (year >= 2007)%>%
   filter (year <= 2022) %>% 
@@ -238,7 +238,7 @@ master_df <- master_df %>%
 
 #2. Government Ideology
 
-Government_Ideology <- read_excel("Government Ideology.xlsx")
+Government_Ideology <- read_excel("data/Government Ideology.xlsx")
 
 Government_Ideology <- Government_Ideology %>%
   filter (countryname %in% c("Costa Rica", "Panama", "Guatemala", "El Salvador", "Honduras", "Nicaragua")) 
@@ -298,7 +298,7 @@ Government_Ideology <- Government_Ideology %>%
   
   # 1. Clean and reshape the raw World Bank dataset
   
-  wb_raw <- read_excel(data/"World Bank Economic Control Variables.xlsx")
+  wb_raw <- read_excel("data/World Bank Economic Control Variables.xlsx")
   
   wb_cleaned <- wb_raw %>%
     
@@ -342,7 +342,7 @@ Government_Ideology <- Government_Ideology %>%
       us_aid_usd = `Net bilateral aid flows from DAC donors, United States (current US$)`
     )
   
-  # 2. Join into your main panel dataset (master+df)
+  # 2. Join into your main panel dataset (master_df)
   master_df <- master_df %>%
     left_join(wb_cleaned, by = c("country", "year"))
   
@@ -486,38 +486,38 @@ Government_Ideology <- Government_Ideology %>%
 
   # Models
   
-  m1 <- feols(pct_china ~ aid_event + FDI_event + exports_china + imports_china | country + year, 
+  m1_rob <- feols(pct_china ~ aid_event + FDI_event + exports_china + imports_china | country + year, 
               data = master_df, panel.id = ~country + year, vcov = "DK")
   
-  m2 <- feols(pct_china ~ aid_event + FDI_event + exports_china + imports_china + 
+  m2_rob <- feols(pct_china ~ aid_event + FDI_event + exports_china + imports_china + 
                 ideology_num | country + year, 
               data = master_df, panel.id = ~country + year, vcov = "DK")
   
-  m3 <- feols(pct_china ~ aid_event + FDI_event + exports_china + imports_china + 
+  m3_rob <- feols(pct_china ~ aid_event + FDI_event + exports_china + imports_china + 
                 v2x_polyarchy + ideology_num | country + year, 
               data = master_df, panel.id = ~country + year, vcov = "DK")
   
-  m4 <- feols(pct_china ~ aid_event + FDI_event + exports_china + imports_china + 
+  m4_rob <- feols(pct_china ~ aid_event + FDI_event + exports_china + imports_china + 
                 v2x_polyarchy + ideology_num + gdp_growth | country + year, 
               data = master_df, panel.id = ~country + year, vcov = "DK")
   
-  m5 <- feols(pct_china ~ aid_event + FDI_event + exports_china + imports_china + 
+  m5_rob <- feols(pct_china ~ aid_event + FDI_event + exports_china + imports_china + 
                 v2x_polyarchy + ideology_num + gdp_growth + inflation | country + year, 
               data = master_df, panel.id = ~country + year, vcov = "DK")
   
-  m6 <- feols(pct_china ~ aid_event + FDI_event + exports_china + imports_china + 
+  m6_rob <- feols(pct_china ~ aid_event + FDI_event + exports_china + imports_china + 
                 v2x_polyarchy + gdp_growth + inflation + ideology_num + us_aid_m | country + year, 
               data = master_df, panel.id = ~country + year, vcov = "DK")
   
   ## Table comparison
   
   models_list <- list(
-    "Model 1: Core Engagement"  = m1,
-    "Model 2: + Government Ideology"  = m2,
-    "Model 3: + Polyarchy Index"       = m3,
-    "Model 4: + GDP Growth"        = m4,
-    "Model 5: + Inflation"         = m5,
-    "Model 6: + US Aid"           = m6
+    "Model 1: Core Engagement"  = m1_rob,
+    "Model 2: + Government Ideology"  = m2_rob,
+    "Model 3: + Polyarchy Index"       = m3_rob,
+    "Model 4: + GDP Growth"        = m4_rob,
+    "Model 5: + Inflation"         = m5_rob,
+    "Model 6: + US Aid"           = m6_rob
   )
   
   # 2. Map exact dataset variable names -> Clean display labels
@@ -542,38 +542,38 @@ Government_Ideology <- Government_Ideology %>%
   
   # Models for the US
   
-  m7 <- feols(pct_us ~ aid_event + FDI_event + exports_china + imports_china | country + year, 
+  m7_rob <- feols(pct_us ~ aid_event + FDI_event + exports_china + imports_china | country + year, 
               data = master_df, panel.id = ~country + year, vcov = "DK")
   
-  m8 <- feols(pct_us ~ aid_event + FDI_event + exports_china + imports_china + 
+  m8_rob <- feols(pct_us ~ aid_event + FDI_event + exports_china + imports_china + 
                 ideology_num | country + year, 
               data = master_df, panel.id = ~country + year, vcov = "DK")
   
-  m9 <- feols(pct_us ~ aid_event + FDI_event + exports_china + imports_china + 
+  m9_rob <- feols(pct_us ~ aid_event + FDI_event + exports_china + imports_china + 
                 v2x_polyarchy + ideology_num | country + year, 
               data = master_df, panel.id = ~country + year, vcov = "DK")
   
-  m10 <- feols(pct_us ~ aid_event + FDI_event + exports_china + imports_china + 
+  m10_rob <- feols(pct_us ~ aid_event + FDI_event + exports_china + imports_china + 
                  v2x_polyarchy + ideology_num + gdp_growth | country + year, 
                data = master_df, panel.id = ~country + year, vcov = "DK")
   
-  m11 <- feols(pct_us ~ aid_event + FDI_event + exports_china + imports_china + 
+  m11_rob <- feols(pct_us ~ aid_event + FDI_event + exports_china + imports_china + 
                  v2x_polyarchy + ideology_num + gdp_growth + inflation | country + year, 
                data = master_df, panel.id = ~country + year, vcov = "DK")
   
-  m12 <- feols(pct_us ~ aid_event + FDI_event + exports_china + imports_china + 
+  m12_rob <- feols(pct_us ~ aid_event + FDI_event + exports_china + imports_china + 
                  v2x_polyarchy + gdp_growth + inflation + ideology_num + us_aid_m | country + year, 
                data = master_df, panel.id = ~country + year, vcov = "DK")
   
   ## Table comparison
   
   models_list <- list(
-    "Model 1: Core Engagement"  = m7,
-    "Model 2: + Government Ideology"  = m8,
-    "Model 3: + Polyarchy Index"       = m9,
-    "Model 4: + GDP Growth"        = m10,
-    "Model 5: + Inflation"         = m11,
-    "Model 6: + US Aid"           = m12
+    "Model 1: Core Engagement"  = m7_rob,
+    "Model 2: + Government Ideology"  = m8_rob,
+    "Model 3: + Polyarchy Index"       = m9_rob,
+    "Model 4: + GDP Growth"        = m10_rob,
+    "Model 5: + Inflation"         = m11_rob,
+    "Model 6: + US Aid"           = m12_rob
   )
   
   # 2. Map exact dataset variable names -> Clean display labels
