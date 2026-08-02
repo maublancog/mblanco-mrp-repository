@@ -342,7 +342,7 @@ Government_Ideology <- Government_Ideology %>%
       us_aid_usd = `Net bilateral aid flows from DAC donors, United States (current US$)`
     )
   
-  # 2. Join into your main panel dataset (summary_df6)
+  # 2. Join into your main panel dataset (master+df)
   master_df <- master_df %>%
     left_join(wb_cleaned, by = c("country", "year"))
   
