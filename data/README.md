@@ -9,7 +9,7 @@ This folder contains datasets used in the quantitative analysis for the article:
 Due to GitHub file size limitations, not all raw datasets are stored directly in this repository.
 
 - Datasets smaller than 100 MB are included in this folder.
-- Two large raw datasets (exceeding 100 MB) are archived on Zenodo and can be accessed at the following DOI:
+- Three large raw datasets (exceeding 100 MB) are archived on Zenodo and can be accessed at the following DOI:
 
 https://doi.org/10.5281/zenodo.18425311
 
