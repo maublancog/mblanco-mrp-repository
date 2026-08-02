@@ -7,8 +7,7 @@ This repository contains replication materials for the Master’s Major Research
 ## Repository structure
 
 - `/data`: Input datasets used in the analysis  
-- `/code`: R scripts for data processing, analysis, and figure generation  
-- `/output`: Generated tables and figures  
+- `/code`: R scripts for data processing, analysis, and table generation  
 
 Large datasets that exceed GitHub’s file size limits are archived separately on Zenodo (DOI: https://doi.org/10.5281/zenodo.18425311). See `/data/README.md` for details.
 
