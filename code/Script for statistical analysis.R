@@ -478,11 +478,30 @@ Government_Ideology <- Government_Ideology %>%
   
 # Robustness Checks: Event-based indicators for Foreign Aid and FDI -------
 
+  ## New column based on FDI event is created directly from cleaned data, as no observations were dropped because they were NAs
+  
   master_df <- master_df %>% 
     mutate(
-      aid_event = (ifelse (aid_committed > 0, 1, 0)),
       FDI_event = (ifelse (fdi_total > 0, 1, 0))
     )
+  
+## For Foreign Aid, I will re-import the original data with 218 observations (before dropping the NAs)
+
+  # 1. Re-import Chinese Aid dataset WITHOUT filtering NAs
+  raw_aid_events <- read_excel("data/Chinese Foreign Aid.xlsx") %>%
+    filter(Recipient %in% ca_countries) %>%
+    filter(!is.na(`Commitment Year`)) %>%
+    group_by(country = Recipient, year = `Commitment Year`) %>%
+    summarise(aid_event = 1, .groups = "drop")
+  
+  # 2. Join event indicators back to master_df & replace NAs with 0
+  master_df <- master_df %>%
+    select(-any_of(c("aid_event", "FDI_event"))) %>% # drop existing event columns if present
+    left_join(raw_fdi_events, by = c("country", "year")) %>%
+    left_join(raw_aid_events, by = c("country", "year")) %>%
+    mutate(
+      aid_event = coalesce(aid_event, 0)
+    )  
 
   # Models
   
