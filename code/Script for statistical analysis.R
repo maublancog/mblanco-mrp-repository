@@ -496,8 +496,7 @@ Government_Ideology <- Government_Ideology %>%
   
   # 2. Join event indicators back to master_df & replace NAs with 0
   master_df <- master_df %>%
-    select(-any_of(c("aid_event", "FDI_event"))) %>% # drop existing event columns if present
-    left_join(raw_fdi_events, by = c("country", "year")) %>%
+    select(-any_of(c("aid_event"))) %>% # drop existing event columns if present
     left_join(raw_aid_events, by = c("country", "year")) %>%
     mutate(
       aid_event = coalesce(aid_event, 0)
