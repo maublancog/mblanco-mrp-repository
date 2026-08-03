@@ -73,7 +73,7 @@ master_df <- df_long %>%
 
 # Importing data for Foreign Aid
 
-Foreign_Aid <- read_excel("data/Chiense Foreign Aid.xlsx")
+Foreign_Aid <- read_excel("data/Chinese Foreign Aid.xlsx")
 
 Foreign_Aid <- Foreign_Aid %>% select ("Recipient", "Commitment Year", "Implementation Start Year", "Completion Year", "Sector Name", "Amount (Constant USD 2021)") %>%
   filter (Recipient %in% ca_countries)
